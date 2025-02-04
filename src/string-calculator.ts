@@ -11,7 +11,10 @@ export class StringCalculator {
       numbers = numbersString;
     }
 
-    let parsedNumbers = numbers.split(regex).map(Number);
+    let parsedNumbers = numbers
+      .split(regex)
+      .map(Number)
+      .filter((number) => number <= 1000);
     if (parsedNumbers.some((number) => number < 0)) {
       throw new Error(
         `error: negatives not allowed: ${parsedNumbers.filter((number) => number < 0).join(" ")}`
