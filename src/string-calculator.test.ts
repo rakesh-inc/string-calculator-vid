@@ -29,4 +29,8 @@ describe("StringCalculator", () => {
   it("should return sum of numbers when we pass in the custom separator", () => {
     expect(calculator.add("//;\n1;2")).toBe(3);
   });
+
+  it("should throw an error in case there are negative number", () => {
+    expect(() => calculator.add("1,-2,-3")).toThrow("error: negatives not allowed: -2 -3");
+  });
 });
