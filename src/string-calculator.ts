@@ -12,6 +12,11 @@ export class StringCalculator {
     }
 
     let parsedNumbers = numbers.split(regex).map(Number);
+    if (parsedNumbers.some((number) => number < 0)) {
+      throw new Error(
+        `error: negatives not allowed: ${parsedNumbers.filter((number) => number < 0).join(" ")}`
+      );
+    }
     return parsedNumbers.reduce((acc, curr) => acc + curr, 0);
   }
 }
