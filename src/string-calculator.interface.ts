@@ -6,3 +6,7 @@ export interface StringParserResult {
 export interface IStringParser {
   parse(input: string): StringParserResult;
 }
+
+export interface INumbersValidator {
+  validate(input: number[]): number[];
+}

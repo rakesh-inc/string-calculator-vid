@@ -1,9 +1,9 @@
-import { StringCalculator, StringParser } from "./string-calculator";
+import { NumbersValidator, StringCalculator, StringParser } from "./string-calculator";
 
 describe("StringCalculator", () => {
   let calculator: StringCalculator;
   beforeEach(() => {
-    calculator = new StringCalculator(new StringParser());
+    calculator = new StringCalculator(new StringParser(), new NumbersValidator());
   });
 
   it("should return 0 in case of empty string", () => {
