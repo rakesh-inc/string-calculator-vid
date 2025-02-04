@@ -1,9 +1,19 @@
 import {
+  IStringParserResultBuilder,
   IDelimiterChecker,
   INumbersValidator,
   IStringParser,
   StringParserResult,
 } from "./string-calculator.interface";
+
+export class StringParserResultBuilder implements IStringParserResultBuilder {
+  build(regex: RegExp, input: string): StringParserResult {
+    return {
+      regularExpression: regex,
+      updatedNumbers: input,
+    };
+  }
+}
 
 export class DelimiterChecker implements IDelimiterChecker {
   isCustomDelimiter(input: string): boolean {
@@ -37,34 +47,32 @@ export class NumbersValidator implements INumbersValidator {
 }
 
 export class StringParser implements IStringParser {
-  constructor(private delimiterChecker: DelimiterChecker) {}
+  constructor(
+    private delimiterChecker: DelimiterChecker,
+    private stringParserBuilder: IStringParserResultBuilder
+  ) {}
 
   parse(input: string): StringParserResult {
     if (!this.delimiterChecker.isCustomDelimiter(input)) {
-      return {
-        regularExpression: new RegExp(`[,\n]`),
-        updatedNumbers: input,
-      };
+      return this.stringParserBuilder.build(new RegExp(`[,\n]`), input);
     }
 
     let [delimiter, numbersString] = input.split("\n");
     delimiter = delimiter.slice(2);
 
     if (!this.delimiterChecker.isCustomEnclosedDelimiter(delimiter)) {
-      return {
-        regularExpression: new RegExp(`[${delimiter}]`),
-        updatedNumbers: numbersString,
-      };
+      return this.stringParserBuilder.build(new RegExp(`[${delimiter}]`), numbersString);
     }
-    return {
-      regularExpression: new RegExp(
+
+    return this.stringParserBuilder.build(
+      new RegExp(
         `[${delimiter
           .split(/[\[\]]/)
           .filter(Boolean)
           .join("")}]`
       ),
-      updatedNumbers: numbersString,
-    };
+      numbersString
+    );
   }
 }
 

@@ -15,3 +15,7 @@ export interface IDelimiterChecker {
   isCustomDelimiter(input: string): boolean;
   isCustomEnclosedDelimiter(input: string): boolean;
 }
+
+export interface IStringParserResultBuilder {
+  build(regex: RegExp, input: string): StringParserResult;
+}
