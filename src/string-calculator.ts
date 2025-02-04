@@ -3,7 +3,7 @@ export class StringCalculator {
     if (numbers === "") {
       return 0;
     }
-    let parsedNumbers = numbers.split(",").map(Number);
+    let parsedNumbers = numbers.split(/[,\n]/).map(Number);
     return parsedNumbers.reduce((acc, curr) => acc + curr, 0);
   }
 }
