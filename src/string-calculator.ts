@@ -1,20 +1,39 @@
+import { IStringParser, StringParserResult } from "./string-calculator.interface";
+
+export class StringParser implements IStringParser {
+  parse(input: string): StringParserResult {
+    if (!input.startsWith("//")) {
+      return {
+        regularExpression: new RegExp(`[,\n]`),
+        updatedNumbers: input,
+      };
+    }
+
+    let [delimiter, numbersString] = input.split("\n");
+    delimiter = delimiter.slice(2);
+
+    return {
+      regularExpression: new RegExp(`[${delimiter}]`),
+      updatedNumbers: numbersString,
+    };
+  }
+}
+
 export class StringCalculator {
+  constructor(private stringParser: IStringParser) {}
+
   add(numbers: string): number {
     if (numbers === "") {
       return 0;
     }
-    let regex = new RegExp(`[,\n]`);
-    if (numbers.startsWith("//")) {
-      let [delimiter, numbersString] = numbers.split("\n");
-      delimiter = delimiter.slice(2);
-      regex = new RegExp(`[${delimiter}]`);
-      numbers = numbersString;
-    }
 
-    let parsedNumbers = numbers
-      .split(regex)
+    const { regularExpression, updatedNumbers } = this.stringParser.parse(numbers);
+
+    let parsedNumbers = updatedNumbers
+      .split(regularExpression)
       .map(Number)
       .filter((number) => number <= 1000);
+
     if (parsedNumbers.some((number) => number < 0)) {
       throw new Error(
         `error: negatives not allowed: ${parsedNumbers.filter((number) => number < 0).join(" ")}`
