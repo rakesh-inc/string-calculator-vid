@@ -22,7 +22,11 @@ describe("StringCalculator", () => {
     expect(calculator.add("1,2,3,4,5,6,7,8,9")).toBe(45);
   });
 
-  it("should return the sum of number when separator is a new line character", () => {
+  it("should return the sum of numbers when separator is a new line character", () => {
     expect(calculator.add("1\n2,3")).toBe(6);
+  });
+
+  it("should return sum of numbers when we pass in the custom separator", () => {
+    expect(calculator.add("//;\n1;2")).toBe(3);
   });
 });
