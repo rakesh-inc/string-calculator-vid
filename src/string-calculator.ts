@@ -37,8 +37,18 @@ export class StringParser implements IStringParser {
     let [delimiter, numbersString] = input.split("\n");
     delimiter = delimiter.slice(2);
 
+    let updatedDelimiter = new RegExp(`[${delimiter}]`);
+    if (delimiter.startsWith("[") && delimiter.endsWith("]")) {
+      updatedDelimiter = new RegExp(
+        `[${delimiter
+          .split(/[\[\]]/)
+          .filter(Boolean)
+          .join("")}]`
+      );
+    }
+
     return {
-      regularExpression: new RegExp(`[${delimiter}]`),
+      regularExpression: updatedDelimiter,
       updatedNumbers: numbersString,
     };
   }
