@@ -50,4 +50,12 @@ describe("StringCalculator", () => {
   it("should return sum when arbitrary length delimiter are passed", () => {
     expect(calculator.add("//[***]\n1***2***3")).toBe(6);
   });
+
+  it("should return sum when multiple single lenght enclosed delimiter are passed", () => {
+    expect(calculator.add("//[*][%]\n1*2%3")).toBe(6);
+  });
+
+  it("should return sum when multiple longer-length enclosed delimiter are passed", () => {
+    expect(calculator.add("//[foo][bar]\n1foo2bar3")).toBe(6);
+  });
 });
