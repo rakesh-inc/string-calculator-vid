@@ -16,6 +16,6 @@ export interface IDelimiterChecker {
   isCustomEnclosedDelimiter(input: string): boolean;
 }
 
-export interface IStringParserResultBuilder {
+export interface IResultBuilder {
   build(regex: RegExp, input: string): StringParserResult;
 }

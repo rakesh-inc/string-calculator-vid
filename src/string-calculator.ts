@@ -1,12 +1,12 @@
 import {
-  IStringParserResultBuilder,
+  IResultBuilder,
   IDelimiterChecker,
   INumbersValidator,
   IStringParser,
   StringParserResult,
 } from "./string-calculator.interface";
 
-export class StringParserResultBuilder implements IStringParserResultBuilder {
+export class StringParserResultBuilder implements IResultBuilder {
   build(regex: RegExp, input: string): StringParserResult {
     return {
       regularExpression: regex,
@@ -47,24 +47,21 @@ export class NumbersValidator implements INumbersValidator {
 }
 
 export class StringParser implements IStringParser {
-  constructor(
-    private delimiterChecker: DelimiterChecker,
-    private stringParserBuilder: IStringParserResultBuilder
-  ) {}
+  constructor(private delimiterChecker: DelimiterChecker, private resultBuilder: IResultBuilder) {}
 
   parse(input: string): StringParserResult {
     if (!this.delimiterChecker.isCustomDelimiter(input)) {
-      return this.stringParserBuilder.build(new RegExp(`[,\n]`), input);
+      return this.resultBuilder.build(new RegExp(`[,\n]`), input);
     }
 
     let [delimiter, numbersString] = input.split("\n");
     delimiter = delimiter.slice(2);
 
     if (!this.delimiterChecker.isCustomEnclosedDelimiter(delimiter)) {
-      return this.stringParserBuilder.build(new RegExp(`[${delimiter}]`), numbersString);
+      return this.resultBuilder.build(new RegExp(`[${delimiter}]`), numbersString);
     }
 
-    return this.stringParserBuilder.build(
+    return this.resultBuilder.build(
       new RegExp(
         `[${delimiter
           .split(/[\[\]]/)
