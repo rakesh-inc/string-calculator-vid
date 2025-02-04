@@ -11,11 +11,15 @@ export interface INumbersValidator {
   validate(input: number[]): number[];
 }
 
-export interface IDelimiterChecker {
-  isCustomDelimiter(input: string): boolean;
-  isCustomEnclosedDelimiter(input: string): boolean;
-}
-
 export interface IResultBuilder {
   build(regex: RegExp, input: string): StringParserResult;
+}
+
+export interface IDelimiterStrategy {
+  canHandle(input: string): boolean;
+  parse(input: string): RegExp;
+}
+
+export interface IDelimiterContext {
+  parseDelimiter(input: string): RegExp;
 }

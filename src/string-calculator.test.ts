@@ -1,16 +1,16 @@
 import {
-  DelimiterChecker,
+  DelimiterContext,
   NumbersValidator,
   StringCalculator,
   StringParser,
-  StringParserResultBuilder,
+  ResultBuilder,
 } from "./string-calculator";
 
 describe("StringCalculator", () => {
   let calculator: StringCalculator;
   beforeEach(() => {
     calculator = new StringCalculator(
-      new StringParser(new DelimiterChecker(), new StringParserResultBuilder()),
+      new StringParser(new DelimiterContext(), new ResultBuilder()),
       new NumbersValidator()
     );
   });

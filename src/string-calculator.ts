@@ -1,27 +1,70 @@
 import {
   IResultBuilder,
-  IDelimiterChecker,
   INumbersValidator,
   IStringParser,
   StringParserResult,
+  IDelimiterStrategy,
+  IDelimiterContext,
 } from "./string-calculator.interface";
 
-export class StringParserResultBuilder implements IResultBuilder {
+export class DefaultDelimiterStrategy implements IDelimiterStrategy {
+  canHandle(input: string): boolean {
+    return !input.startsWith("//");
+  }
+  parse(input: string): RegExp {
+    return new RegExp(`[,\n]`);
+  }
+}
+
+export class SingleDelimiterStrategy implements IDelimiterStrategy {
+  canHandle(input: string): boolean {
+    return input.startsWith("//") && !input.includes("[") && !input.includes("]");
+  }
+  parse(input: string): RegExp {
+    const delimiter = input.slice(2).split("\n")[0];
+    return new RegExp(`[${delimiter}]`);
+  }
+}
+
+export class MulitipleDelimiterStrategy implements IDelimiterStrategy {
+  canHandle(input: string): boolean {
+    return input.startsWith("//") && input.includes("[") && input.includes("]");
+  }
+
+  parse(input: string): RegExp {
+    const delimiterSection = input.slice(2).split("\n")[0];
+    const delimiter = delimiterSection
+      .split(/[\[\]]/)
+      .filter(Boolean)
+      .join("");
+    return RegExp(`[${delimiter}]`);
+  }
+}
+
+export class DelimiterContext implements IDelimiterContext {
+  private strategies: IDelimiterStrategy[];
+  constructor() {
+    this.strategies = [
+      new DefaultDelimiterStrategy(),
+      new SingleDelimiterStrategy(),
+      new MulitipleDelimiterStrategy(),
+    ];
+  }
+  parseDelimiter(input: string): RegExp {
+    const strategy = this.strategies.find((s) => s.canHandle(input));
+    if (!strategy) {
+      throw new Error("No suitable strategy found");
+    }
+    return strategy.parse(input);
+  }
+}
+
+export class ResultBuilder implements IResultBuilder {
   build(regex: RegExp, input: string): StringParserResult {
     return {
       regularExpression: regex,
       updatedNumbers: input,
     };
-  }
-}
-
-export class DelimiterChecker implements IDelimiterChecker {
-  isCustomDelimiter(input: string): boolean {
-    return input.startsWith("//");
-  }
-
-  isCustomEnclosedDelimiter(input: string): boolean {
-    return input.startsWith("[") && input.endsWith("]");
   }
 }
 
@@ -47,29 +90,12 @@ export class NumbersValidator implements INumbersValidator {
 }
 
 export class StringParser implements IStringParser {
-  constructor(private delimiterChecker: DelimiterChecker, private resultBuilder: IResultBuilder) {}
+  constructor(private delimiterContext: IDelimiterContext, private resultBuilder: IResultBuilder) {}
 
   parse(input: string): StringParserResult {
-    if (!this.delimiterChecker.isCustomDelimiter(input)) {
-      return this.resultBuilder.build(new RegExp(`[,\n]`), input);
-    }
-
-    let [delimiter, numbersString] = input.split("\n");
-    delimiter = delimiter.slice(2);
-
-    if (!this.delimiterChecker.isCustomEnclosedDelimiter(delimiter)) {
-      return this.resultBuilder.build(new RegExp(`[${delimiter}]`), numbersString);
-    }
-
-    return this.resultBuilder.build(
-      new RegExp(
-        `[${delimiter
-          .split(/[\[\]]/)
-          .filter(Boolean)
-          .join("")}]`
-      ),
-      numbersString
-    );
+    const regex = this.delimiterContext.parseDelimiter(input);
+    const numbers = input.startsWith("//") ? input.split("\n")[1] : input;
+    return this.resultBuilder.build(regex, numbers);
   }
 }
 
