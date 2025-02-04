@@ -10,3 +10,8 @@ export interface IStringParser {
 export interface INumbersValidator {
   validate(input: number[]): number[];
 }
+
+export interface IDelimiterChecker {
+  isCustomDelimiter(input: string): boolean;
+  isCustomEnclosedDelimiter(input: string): boolean;
+}
