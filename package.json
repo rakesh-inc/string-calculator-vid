@@ -1,0 +1,21 @@
+{
+  "name": "string-calculator-vid",
+  "version": "1.0.0",
+  "main": "string-calculator.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Rakesh Kumar <rakesh.kumar.132457@gmail.com>",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}
