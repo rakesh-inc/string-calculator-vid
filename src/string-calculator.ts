@@ -26,7 +26,7 @@ export class SingleDelimiterStrategy implements IDelimiterStrategy {
   }
 }
 
-export class MulitipleDelimiterStrategy implements IDelimiterStrategy {
+export class MultipleDelimiterStrategy implements IDelimiterStrategy {
   canHandle(input: string): boolean {
     return input.startsWith("//") && input.includes("[") && input.includes("]");
   }
@@ -47,7 +47,7 @@ export class DelimiterContext implements IDelimiterContext {
     this.strategies = [
       new DefaultDelimiterStrategy(),
       new SingleDelimiterStrategy(),
-      new MulitipleDelimiterStrategy(),
+      new MultipleDelimiterStrategy(),
     ];
   }
   parseDelimiter(input: string): RegExp {
